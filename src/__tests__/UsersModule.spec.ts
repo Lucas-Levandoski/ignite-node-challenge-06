@@ -2,7 +2,6 @@ import 'reflect-metadata';
 import { validate } from 'uuid';
 import { verify } from 'jsonwebtoken';
 
-
 import authConfig from '../config/auth';
 
 import { CreateUserUseCase } from '../modules/users/useCases/createUser/CreateUserUseCase';
@@ -10,11 +9,13 @@ import { InMemoryUsersRepository } from '../modules/users/repositories/in-memory
 import { CreateUserError } from '../modules/users/useCases/createUser/CreateUserError';
 import { AuthenticateUserUseCase } from '../modules/users/useCases/authenticateUser/AuthenticateUserUseCase';
 import { IncorrectEmailOrPasswordError } from '../modules/users/useCases/authenticateUser/IncorrectEmailOrPasswordError';
+import { ShowUserProfileUseCase } from '../modules/users/useCases/showUserProfile/ShowUserProfileUseCase';
 
 
 const usersRepository = new InMemoryUsersRepository();
 const createUserUseCase = new CreateUserUseCase(usersRepository);
 const authenticateUserUseCase = new AuthenticateUserUseCase(usersRepository);
+const showUserProfileUseCase = new ShowUserProfileUseCase(usersRepository);
 
 describe('CreateUserUseCase', () => {
   it('should be able to create and find a new user', async () => {
@@ -66,5 +67,15 @@ describe('AuthenticateUser', () => {
     expect(async () => {
       await authenticateUserUseCase.execute({ email: user.email, password: '1' })
     }).rejects.toBeInstanceOf(IncorrectEmailOrPasswordError);
+  });
+})
+
+describe('ShowUserProfile', () => {
+  it('should return user profile', async () => {
+    const user = await usersRepository.create({ name: 'profile use case', email: 'profile@useCase', password: '1234' })
+
+    const userFound = await showUserProfileUseCase.execute(user.id!);
+
+    expect(userFound).toEqual(user);
   });
 })
