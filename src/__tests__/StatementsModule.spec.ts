@@ -1,12 +1,15 @@
 import { InMemoryStatementsRepository } from "../modules/statements/repositories/in-memory/InMemoryStatementsRepository"
 import { CreateStatementError } from "../modules/statements/useCases/createStatement/CreateStatementError";
 import { CreateStatementUseCase } from "../modules/statements/useCases/createStatement/CreateStatementUseCase";
+import { GetBalanceError } from "../modules/statements/useCases/getBalance/GetBalanceError";
+import { GetBalanceUseCase } from "../modules/statements/useCases/getBalance/GetBalanceUseCase";
 import { InMemoryUsersRepository } from "../modules/users/repositories/in-memory/InMemoryUsersRepository";
 
 
 const statementsRepository = new InMemoryStatementsRepository();
 const usersRepository = new InMemoryUsersRepository();
 const createStatementUseCase = new CreateStatementUseCase(usersRepository, statementsRepository);
+const getBalanceUseCase = new GetBalanceUseCase(statementsRepository, usersRepository);
 
 enum OperationType {
   DEPOSIT = 'deposit',
@@ -39,4 +42,22 @@ describe('CreateStatementUseCase', () => {
       await createStatementUseCase.execute({ user_id: user.id!, type: OperationType.WITHDRAW, amount: 1000, description: 'should fail' });
     }).rejects.toBeInstanceOf(CreateStatementError.InsufficientFunds);
   })
+})
+
+describe('GetBalanceUseCase', () => {
+  it('should return your account balance', async () => {
+    const user = await usersRepository.create({ name: 'test', email: 'test@test', password: '1234' });
+
+    await statementsRepository.create({ amount: 300, description: '', type: OperationType.DEPOSIT, user_id: user.id! })
+
+    const balance = await getBalanceUseCase.execute({ user_id: user.id! });
+
+    expect(balance.balance).toEqual(300);
+  });
+
+  it('should fail for missing user', () => {
+    expect(async () => {
+      await getBalanceUseCase.execute({ user_id: '11' });
+    }).rejects.toBeInstanceOf(GetBalanceError);
+  });
 })
