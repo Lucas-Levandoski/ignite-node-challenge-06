@@ -38,3 +38,33 @@ describe('CreateUserUseCase', () => {
     }).rejects.toBeInstanceOf(CreateUserError);
   });
 })
+
+describe('AuthenticateUser', () => {
+
+  it('should return a JWT', async () => {
+    usersRepository.create({ name: 'test', email: 'test@test', password: '1234' });
+
+    const { token, user } = await authenticateUserUseCase.execute({ email: 'test@test', password: '1234' });
+
+    expect(user).toBeTruthy();
+
+    expect(token).toBeTruthy();
+    expect(verify(token, authConfig.jwt.secret)).toBeTruthy();
+  });
+
+  it('should not find a user and throw', async () => {
+    const user = await usersRepository.create({ name: 'matchEmail', email: 'match@email', password: '1111' })
+
+    expect(async () => {
+      await authenticateUserUseCase.execute({ email: 'not the same email', password: '1111' })
+    }).rejects.toBeInstanceOf(IncorrectEmailOrPasswordError);
+  });
+
+  it('should not match password and throw', async () => {
+    const user = await usersRepository.create({ name: 'matchPass', email: 'match@pass', password: '1111' })
+
+    expect(async () => {
+      await authenticateUserUseCase.execute({ email: user.email, password: '1' })
+    }).rejects.toBeInstanceOf(IncorrectEmailOrPasswordError);
+  });
+})
