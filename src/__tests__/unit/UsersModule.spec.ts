@@ -2,14 +2,14 @@ import 'reflect-metadata';
 import { validate } from 'uuid';
 import { verify } from 'jsonwebtoken';
 
-import authConfig from '../config/auth';
+import authConfig from '../../config/auth';
 
-import { CreateUserUseCase } from '../modules/users/useCases/createUser/CreateUserUseCase';
-import { InMemoryUsersRepository } from '../modules/users/repositories/in-memory/InMemoryUsersRepository';
-import { CreateUserError } from '../modules/users/useCases/createUser/CreateUserError';
-import { AuthenticateUserUseCase } from '../modules/users/useCases/authenticateUser/AuthenticateUserUseCase';
-import { IncorrectEmailOrPasswordError } from '../modules/users/useCases/authenticateUser/IncorrectEmailOrPasswordError';
-import { ShowUserProfileUseCase } from '../modules/users/useCases/showUserProfile/ShowUserProfileUseCase';
+import { CreateUserUseCase } from '../../modules/users/useCases/createUser/CreateUserUseCase';
+import { InMemoryUsersRepository } from '../../modules/users/repositories/in-memory/InMemoryUsersRepository';
+import { CreateUserError } from '../../modules/users/useCases/createUser/CreateUserError';
+import { AuthenticateUserUseCase } from '../../modules/users/useCases/authenticateUser/AuthenticateUserUseCase';
+import { IncorrectEmailOrPasswordError } from '../../modules/users/useCases/authenticateUser/IncorrectEmailOrPasswordError';
+import { ShowUserProfileUseCase } from '../../modules/users/useCases/showUserProfile/ShowUserProfileUseCase';
 
 
 const usersRepository = new InMemoryUsersRepository();

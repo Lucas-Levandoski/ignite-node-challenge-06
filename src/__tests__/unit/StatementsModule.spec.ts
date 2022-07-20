@@ -1,12 +1,11 @@
-import { emit } from "process";
-import { InMemoryStatementsRepository } from "../modules/statements/repositories/in-memory/InMemoryStatementsRepository"
-import { CreateStatementError } from "../modules/statements/useCases/createStatement/CreateStatementError";
-import { CreateStatementUseCase } from "../modules/statements/useCases/createStatement/CreateStatementUseCase";
-import { GetBalanceError } from "../modules/statements/useCases/getBalance/GetBalanceError";
-import { GetBalanceUseCase } from "../modules/statements/useCases/getBalance/GetBalanceUseCase";
-import { GetStatementOperationError } from "../modules/statements/useCases/getStatementOperation/GetStatementOperationError";
-import { GetStatementOperationUseCase } from "../modules/statements/useCases/getStatementOperation/GetStatementOperationUseCase";
-import { InMemoryUsersRepository } from "../modules/users/repositories/in-memory/InMemoryUsersRepository";
+import { InMemoryStatementsRepository } from "../../modules/statements/repositories/in-memory/InMemoryStatementsRepository"
+import { CreateStatementError } from "../../modules/statements/useCases/createStatement/CreateStatementError";
+import { CreateStatementUseCase } from "../../modules/statements/useCases/createStatement/CreateStatementUseCase";
+import { GetBalanceError } from "../../modules/statements/useCases/getBalance/GetBalanceError";
+import { GetBalanceUseCase } from "../../modules/statements/useCases/getBalance/GetBalanceUseCase";
+import { GetStatementOperationError } from "../../modules/statements/useCases/getStatementOperation/GetStatementOperationError";
+import { GetStatementOperationUseCase } from "../../modules/statements/useCases/getStatementOperation/GetStatementOperationUseCase";
+import { InMemoryUsersRepository } from "../../modules/users/repositories/in-memory/InMemoryUsersRepository";
 
 
 const statementsRepository = new InMemoryStatementsRepository();
