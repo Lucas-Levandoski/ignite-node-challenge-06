@@ -77,4 +77,20 @@ describe('Integration Tests - Statements Routes', () => {
 
     await request(app).get('/api/v1/statements/statement-id-right-here-as-url-param').expect(401);
   });
+
+  it('should get statement by id', async () => {
+    expect(token).toBeTruthy();
+
+    const depositRes = await request(app).post('/api/v1/statements/deposit').send({
+      amount: 500,
+      description: 'test'
+    }).set('Authorization', 'bearer ' + token);
+
+    const statement = await request(app)
+      .get(`/api/v1/statements/${depositRes.body.id}`)
+      .set('Authorization', 'bearer ' + token);
+
+    expect(statement.status).toBe(200);
+    expect(statement.body.user_id).toBe(user_id);
+  });
 })
