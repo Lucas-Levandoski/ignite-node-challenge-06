@@ -46,4 +46,35 @@ describe('Create User Route', () => {
     expect(userProfileRes.status).toBe(200);
     expect(userProfileRes.body.name).toBe(user.name);
   })
+
+  it('should fail to get a user profile for missing token', async () => {
+
+    const res = await request(app).get('/api/v1/profile');
+
+    expect(res.status).toBe(401);
+  })
+
+  it('should fail when trying to authenticate with wrong data', async () => {
+    const user = {
+      name: 'auth-user',
+      email: 'auth@user',
+      password: '1234'
+    }
+
+    await request(app).post('/api/v1/users').send({
+      name: user.name,
+      email: user.email,
+      password: user.password
+    });
+
+    await request(app).post('/api/v1/sessions').send({
+      email: user.email,
+      password: '1111'
+    }).expect(401);
+
+    await request(app).post('/api/v1/sessions').send({
+      email: 'not the real e-mail',
+      password: user.password
+    }).expect(401);
+  })
 })
