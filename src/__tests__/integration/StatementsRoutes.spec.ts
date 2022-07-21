@@ -61,4 +61,20 @@ describe('Integration Tests - Statements Routes', () => {
     expect(balanceRes.status).toBe(200);
     expect(balanceRes.body.balance).toBe(balanceExpected);
   });
+
+  it('should not be able to get any statement endpoint by missing token', async () => {
+    await request(app).post('/api/v1/statements/deposit').send({
+      amount: 500,
+      description: 'test'
+    }).expect(401);
+
+    await request(app).post('/api/v1/statements/withdraw').send({
+      amount: 500,
+      description: 'test'
+    }).expect(401);
+
+    await request(app).get('/api/v1/statements/balance').expect(401);
+
+    await request(app).get('/api/v1/statements/statement-id-right-here-as-url-param').expect(401);
+  });
 })
