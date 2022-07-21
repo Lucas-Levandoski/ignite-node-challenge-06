@@ -1,15 +1,14 @@
 import request from 'supertest';
 import { Connection, createConnection } from 'typeorm';
 import { app } from '../../app';
-import '../../database';
 
 let connection: Connection;
 
-describe('Create User Route', () => {
+describe('Integration Tests - Users Routes', () => {
   beforeAll(async () => {
     connection = await createConnection();
 
-    await connection.runMigrations({ transaction: 'all' });
+    await connection.runMigrations();
   })
 
   afterAll(async () => {
