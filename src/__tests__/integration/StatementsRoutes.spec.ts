@@ -4,6 +4,7 @@ import { app } from '../../app';
 
 let connection: Connection;
 let token: string;
+let user_id: string;
 
 describe('Integration Tests - Statements Routes', () => {
   beforeAll(async () => {
@@ -23,24 +24,41 @@ describe('Integration Tests - Statements Routes', () => {
       password: user.password
     });
 
-    token = (await request(app).post('/api/v1/sessions').send({
+    const session = await request(app).post('/api/v1/sessions').send({
       email: user.email,
       password: user.password
-    })).body.token;
-  })
+    });
+
+    token = session.body.token;
+    user_id = session.body.user.id;
+  });
 
   afterAll(async () => {
     await connection.dropDatabase();
     await connection.close();
-  })
+  });
 
   it('Should be able to deposit, withdraw and get balance', async () => {
+    expect(token).toBeTruthy();
 
-    const res = await request(app).post('/api/v1/statements/deposit').send({
-      amount: 400,
+    const depositRes = await request(app).post('/api/v1/statements/deposit').send({
+      amount: 500,
       description: 'test'
     }).set('Authorization', 'bearer ' + token);
 
-    expect(res.status).toBe(201);
-  })
+    expect(depositRes.status).toBe(201);
+
+    const withdrawRes = await request(app).post('/api/v1/statements/withdraw').send({
+      amount: 250,
+      description: 'test'
+    }).set('Authorization', 'bearer ' + token);
+
+    expect(withdrawRes.status).toBe(201);
+
+    const balanceExpected = depositRes.body.amount - withdrawRes.body.amount
+    const balanceRes = await request(app).get('/api/v1/statements/balance').set('Authorization', 'bearer ' + token);
+
+    expect(balanceRes.status).toBe(200);
+    expect(balanceRes.body.balance).toBe(balanceExpected);
+  });
 })
