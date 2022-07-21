@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ts-node-dev --transpile-only --ignore-watch node_modules --respawn ./src/server.ts",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli",
-    "test": "set JWT_SECRET=123&& set NODE_ENV=INTEGRATION_TEST&& jest"
+    "test": "set JWT_SECRET=123&& set NODE_ENV=INTEGRATION_TEST&& jest --runInBand"
   },
   "dependencies": {
     "@types/supertest": "^2.0.12",
