@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { Connection, createConnection } from 'typeorm';
 import { app } from '../../app';
+import '../../database';
 
 let connection: Connection;
 
@@ -8,17 +9,21 @@ describe('Create User Route', () => {
   beforeAll(async () => {
     connection = await createConnection();
 
-    await connection.runMigrations();
+    await connection.runMigrations({ transaction: 'all' });
   })
 
-  // afterAll(async() => {
+  afterAll(async () => {
+    await connection.dropDatabase();
+    await connection.close();
+  })
 
-  // })
+  it('should be able to create a user', async () => {
+    const response = await request(app).post('/api/v1/users').send({
+      name: 'int-test',
+      email: 'int@test',
+      password: '1234'
+    });
 
-  it('should be able to create a user', (done) => {
-    request(app)
-      .post('/api/v1/users')
-      // .expect('Content-Type', 'text/html; charset=utf-8')
-      .expect(200, done);
+    expect(response.status).toEqual(201);
   })
 })
